@@ -18,4 +18,12 @@ public class serviceCalling {
         return response;
 
     }
+
+    public String empty(){
+        return "";
+    }
+
+    public String getName(){
+        return "lakshay";
+    }
 }
