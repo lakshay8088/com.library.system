@@ -9,16 +9,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class Application  {
 
+    //added logger
     public static Logger logger = LoggerFactory.getLogger(Application.class);
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}
 
-//    @Override
-//    public void run(String... args) throws Exception {
-//
-//        logger.info("Execution time {]", System.currentTimeMillis());
-//
-//    }
+
 }
