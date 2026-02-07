@@ -9,3 +9,9 @@ public class BookPriceNegativeException extends Exception{
         super(message);
     }
 }
+
+
+
+
+//This is negative price exception class
+
