@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -55,6 +56,7 @@ public class controller {
         }
 
         @GetMapping("/Book/Repository")
+        @PreAuthorize("hasRole('USER')")
         public ResponseEntity<Object> getPriceById(@RequestParam int id){
             int priceById = repository.findPriceById(id);
             RESPONSE response=new RESPONSE("Success"," price: " + priceById);
@@ -62,6 +64,7 @@ public class controller {
         }
 
         @GetMapping("/getBooks")
+        @PreAuthorize("hasRole('USER')")
         public ResponseEntity<Object> findBooksByTitle(@RequestParam String title){
             List<Book> booksByTitle = repository.findBooksByTitle(title);
             log.info("booksByTitle: " + booksByTitle);
@@ -71,7 +74,8 @@ public class controller {
         }
 
         @GetMapping("/book/{id}")
-        public ResponseEntity getBookWithId(@PathVariable int id) throws BookNotFoundException {
+        @PreAuthorize("hasRole('USER')")
+        public ResponseEntity<Object> getBookWithId(@PathVariable int id) throws BookNotFoundException {
 
           if (!repository.existsById(id)){
               throw new BookNotFoundException("-------not found-----");
@@ -82,11 +86,12 @@ public class controller {
             RESPONSE response = new RESPONSE();
             response.setStatus("SUCCESS");
             response.setResponseObject("ID of book is : " + bookId);
-            return new ResponseEntity(response, HttpStatus.OK);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
 
         @PostMapping("/addBook")
-    public ResponseEntity<Object> addBook(@RequestBody Book book) throws BookPriceNegativeException {
+        @PreAuthorize("hasRole('USER')")
+        public ResponseEntity<Object> addBook(@RequestBody Book book) throws BookPriceNegativeException {
            if (book.getPrice()<0){
                throw new BookPriceNegativeException("BOOk price is negative");
            }
@@ -99,7 +104,8 @@ public class controller {
         }
 
         @PostMapping("/book")
-            public ResponseEntity<Map<String, Object>> searchByTitle(@RequestParam String title){
+        @PreAuthorize("hasRole('USER')")
+        public ResponseEntity<Map<String, Object>> searchByTitle(@RequestParam String title){
             List<Book> byTitle = repository.findByTitle(title);
             Map<String,Object> response = new HashMap<>();
             response.put("STATUS","SUCCESS");
@@ -109,7 +115,8 @@ public class controller {
         }
 
         @DeleteMapping("/delete/{id}")
-            public ResponseEntity<Object> deleteBook(@PathVariable int id){
+        @PreAuthorize("hasRole('USER')")
+        public ResponseEntity<Object> deleteBook(@PathVariable int id){
             Optional<Book> byId = repository.findById(id);
             Book book = byId.get();
             repository.deleteById(id);
@@ -121,12 +128,14 @@ public class controller {
         }
 
         @GetMapping("/profile")
+        @PreAuthorize("hasRole('USER')")
         public String getProfile(){
         return name;
         }
 
         @GetMapping("/pagable/{id}")
-    public Page<Book> fetchBookByPagable(@PathVariable int id){
+        @PreAuthorize("hasRole('USER')")
+        public Page<Book> fetchBookByPagable(@PathVariable int id){
             Sort sort = Sort.by("id").ascending();
             Pageable pageable = PageRequest.of(1, 9, sort);
             return repository.findAll(pageable);
@@ -134,7 +143,8 @@ public class controller {
         }
 
         @PostMapping("/sampleHttp")
-    public ResponseEntity<String> calling() throws Exception {
+        @PreAuthorize("hasRole('USER')")
+        public ResponseEntity<String> calling() throws Exception {
             return ResponseEntity.ok(service.call3PartyApi());
         }
 
